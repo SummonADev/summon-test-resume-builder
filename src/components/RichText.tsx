@@ -7,13 +7,13 @@ interface RichTextProps {
   linkClassName?: string;
 }
 
-export function RichText({ text, className = '', linkClassName = 'text-black underline hover:opacity-70' }: RichTextProps) {
+export function RichText({ text, className: _className = '', linkClassName = 'text-black underline hover:opacity-70' }: RichTextProps) {
   if (!text) return null;
 
   const parts = parseTextWithLinks(text);
 
   return (
-    <span className={className}>
+    <span className={_className}>
       {parts.map((part, idx) => {
         if (typeof part === 'string') {
           return (

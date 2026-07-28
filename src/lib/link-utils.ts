@@ -17,8 +17,8 @@ export function containsLinks(text: string): boolean {
  */
 export function extractLinks(text: string): Array<{ text: string; url: string; start: number; end: number }> {
   const links: Array<{ text: string; url: string; start: number; end: number }> = [];
-  const regex = new RegExp(URL_PATTERN);
   let match;
+  const regex = /https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
 
   while ((match = regex.exec(text)) !== null) {
     let url = match[0];
@@ -45,15 +45,15 @@ export function extractLinks(text: string): Array<{ text: string; url: string; s
 
 /**
  * Convert plain text links to clickable elements (for React)
- * Returns array of strings and React elements
+ * Returns array of strings and link objects
  */
-export function parseTextWithLinks(text: string): (string | { type: 'link'; text: string; url: string })[] {
+export function parseTextWithLinks(text: string): (string | { text: string; url: string })[] {
   if (!text) return [];
 
   const links = extractLinks(text);
   if (links.length === 0) return [text];
 
-  const result: (string | { type: 'link'; text: string; url: string })[] = [];
+  const result: (string | { text: string; url: string })[] = [];
   let lastEnd = 0;
 
   links.forEach((link) => {
@@ -63,7 +63,6 @@ export function parseTextWithLinks(text: string): (string | { type: 'link'; text
     }
     // Add link
     result.push({
-      type: 'link',
       text: link.text,
       url: link.url,
     });

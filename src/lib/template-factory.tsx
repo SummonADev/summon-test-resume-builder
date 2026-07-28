@@ -1,9 +1,9 @@
 import { Resume, TemplateName } from '@/types/resume';
-import ModernMinimal from '@/templates/ModernMinimal';
-import ProfessionalCorporate from '@/templates/ProfessionalCorporate';
-import ElegantTwoColumn from '@/templates/ElegantTwoColumn';
-import CreativeDesigner from '@/templates/CreativeDesigner';
-import ATSFriendly from '@/templates/ATSFriendly';
+import { ModernMinimal } from '@/templates/ModernMinimal';
+import { ProfessionalCorporate } from '@/templates/ProfessionalCorporate';
+import { ElegantTwoColumn } from '@/templates/ElegantTwoColumn';
+import { CreativeDesigner } from '@/templates/CreativeDesigner';
+import { ATSFriendly } from '@/templates/ATSFriendly';
 
 export function renderTemplate(resume: Resume) {
   switch (resume.template) {
@@ -27,25 +27,5 @@ export const TEMPLATES: Array<{ id: TemplateName; name: string; description: str
     id: 'modern-minimal',
     name: 'Modern Minimal',
     description: 'Clean, minimal design with accent color',
-  },
-  {
-    id: 'professional-corporate',
-    name: 'Professional Corporate',
-    description: 'Traditional business-focused layout',
-  },
-  {
-    id: 'elegant-two-column',
-    name: 'Elegant Two Column',
-    description: 'Sidebar design with summary on left',
-  },
-  {
-    id: 'creative-designer',
-    name: 'Creative Designer',
-    description: 'Bold, visually striking layout',
-  },
-  {
-    id: 'ats-friendly',
-    name: 'ATS-Friendly',
-    description: 'Optimized for applicant tracking systems',
   },
 ];
