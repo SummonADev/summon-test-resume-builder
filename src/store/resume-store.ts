@@ -514,7 +514,7 @@ export const useResumeStore = create<ResumeStore>((set, get) => {
     },
 
     // Persistence
-    loadResume: (resumeId?: string) => {
+    loadResume: () => {
       // TODO: Implement loading from cloud/database
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
@@ -524,12 +524,11 @@ export const useResumeStore = create<ResumeStore>((set, get) => {
     },
 
     saveResume: () => {
-      const state = get();
-      saveToStorage(state.resume);
+      saveToStorage(get().resume);
     },
 
     createNewResume: (name?: string) =>
-      set((state) => {
+      set(() => {
         const newResume = createDefaultResume(name);
         saveToStorage(newResume);
         return { resume: newResume, history: [{ resume: newResume, timestamp: Date.now() }], historyIndex: 0 };
