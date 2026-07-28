@@ -8,6 +8,7 @@ import PreviewPanel from '@/components/PreviewPanel';
 import TemplateSelector from '@/components/TemplateSelector';
 import SettingsModal from '@/components/SettingsModal';
 import CompletenessIndicator from '@/components/CompletenessIndicator';
+import KeyboardShortcutsHint from '@/components/KeyboardShortcutsHint';
 import PersonalInfoForm from '@/components/sections/PersonalInfoForm';
 import SummaryForm from '@/components/sections/SummaryForm';
 import SkillsForm from '@/components/sections/SkillsForm';
@@ -120,6 +121,9 @@ export default function ResumeBuilder() {
           </div>
         </PreviewPanel>
       </div>
+
+      {/* Keyboard Shortcuts Help */}
+      <KeyboardShortcutsHint />
     </div>
   );
 }
