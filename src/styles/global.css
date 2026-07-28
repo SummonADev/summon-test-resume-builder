@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900;
+  }
+  
+  button:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50;
+  }
+  
+  .btn-secondary {
+    @apply px-4 py-2 bg-slate-200 text-slate-900 rounded-lg hover:bg-slate-300 transition-colors font-medium;
+  }
+  
+  .btn-sm {
+    @apply px-2 py-1 text-sm rounded transition-colors;
+  }
+  
+  .input-field {
+    @apply w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  }
+  
+  .section-header {
+    @apply flex items-center justify-between p-4 bg-white border-b border-slate-200 rounded-t-lg;
+  }
+  
+  .section-body {
+    @apply p-4 bg-white;
+  }
+  
+  .form-group {
+    @apply mb-4;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-slate-700 mb-1;
+  }
+  
+  .error-text {
+    @apply text-red-600 text-sm mt-1;
+  }
+}
+
+/* Drag and drop styles */
+.draggable-section {
+  @apply transition-opacity duration-200;
+}
+
+.draggable-section.dragging {
+  @apply opacity-50;
+}
+
+.draggable-section.drag-over {
+  @apply border-t-2 border-blue-500;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.2s ease-out;
+}
+
+/* Rich text editor */
+.lexical-editor {
+  @apply rounded-lg border border-slate-300 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent;
+}
+
+.lexical-editor p {
+  @apply mb-2;
+}
+
+.lexical-editor strong {
+  @apply font-bold;
+}
+
+.lexical-editor em {
+  @apply italic;
+}
+
+.lexical-editor ul {
+  @apply list-disc list-inside ml-4 mb-2;
+}
+
+.lexical-editor ol {
+  @apply list-decimal list-inside ml-4 mb-2;
+}
+
+/* PDF preview */
+.pdf-preview {
+  @apply bg-white shadow-lg rounded-lg overflow-hidden;
+}
+
+/* Responsive preview */
+@media (max-width: 1024px) {
+  .preview-container {
+    @apply mt-6;
+  }
+}
