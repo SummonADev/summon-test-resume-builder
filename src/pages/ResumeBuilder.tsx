@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useResumeStore } from '@/store/resume-store';
 import { TemplateName } from '@/types/resume';
 import Header from '@/components/Header';
@@ -14,17 +14,33 @@ import ProjectsForm from '@/components/sections/ProjectsForm';
 import CertificationsForm from '@/components/sections/CertificationsForm';
 import AwardsForm from '@/components/sections/AwardsForm';
 import { renderTemplate } from '@/lib/template-factory';
+import { exportResumeToPDF } from '@/lib/pdf-export';
 
 export default function ResumeBuilder() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const previewRef = useRef<HTMLDivElement>(null);
   const resume = useResumeStore((state) => state.resume);
   const setTemplate = useResumeStore((state) => state.setTemplate);
   const setPreviewMode = useResumeStore((state) => state.setPreviewMode);
   const previewMode = useResumeStore((state) => state.uiState.previewMode);
 
-  const handleExport = () => {
-    alert('PDF export coming in Phase 5');
+  const handleExport = async () => {
+    if (!previewRef.current) {
+      alert('Preview not available');
+      return;
+    }
+
+    try {
+      setExporting(true);
+      await exportResumeToPDF(resume, previewRef.current, `${resume.name}.pdf`);
+    } catch (error) {
+      alert('Failed to export PDF. Please try again.');
+      console.error(error);
+    } finally {
+      setExporting(false);
+    }
   };
 
   const handleAddSection = () => {
@@ -55,6 +71,7 @@ export default function ResumeBuilder() {
         onSidebarToggle={() => setSidebarOpen(!sidebarOpen)}
         onExport={handleExport}
         onTemplateClick={() => setShowTemplateSelector(true)}
+        exporting={exporting}
       />
 
       {/* Main Layout */}
@@ -79,7 +96,7 @@ export default function ResumeBuilder() {
 
         {/* Preview Panel */}
         <PreviewPanel previewMode={previewMode} onModeChange={setPreviewMode}>
-          <div className="p-8">
+          <div ref={previewRef} className="p-8">
             {renderTemplate(resume)}
           </div>
         </PreviewPanel>

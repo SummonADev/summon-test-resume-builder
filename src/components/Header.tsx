@@ -4,11 +4,12 @@ import { useResumeStore } from '@/store/resume-store';
 
 interface HeaderProps {
   onSidebarToggle: () => void;
-  onExport: () => void;
+  onExport: () => void | Promise<void>;
   onTemplateClick?: () => void;
+  exporting?: boolean;
 }
 
-export default function Header({ onSidebarToggle, onExport, onTemplateClick }: HeaderProps) {
+export default function Header({ onSidebarToggle, onExport, onTemplateClick, exporting }: HeaderProps) {
   const resume = useResumeStore((state) => state.resume);
   const canUndo = useResumeStore((state) => state.canUndo());
   const canRedo = useResumeStore((state) => state.canRedo());
@@ -64,7 +65,9 @@ export default function Header({ onSidebarToggle, onExport, onTemplateClick }: H
             variant="primary"
             size="sm"
             onClick={onExport}
+            loading={exporting}
             className="gap-2 flex items-center"
+            disabled={exporting}
           >
             <Download className="w-4 h-4" />
             <span className="hidden sm:inline">Export PDF</span>
