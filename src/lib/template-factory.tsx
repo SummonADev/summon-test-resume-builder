@@ -1,22 +1,22 @@
 import { Resume, TemplateName } from '@/types/resume';
 import ModernMinimal from '@/templates/ModernMinimal';
+import ProfessionalCorporate from '@/templates/ProfessionalCorporate';
+import ATSFriendly from '@/templates/ATSFriendly';
 
 export function renderTemplate(resume: Resume) {
   switch (resume.template) {
     case 'modern-minimal':
       return <ModernMinimal resume={resume} />;
     case 'professional-corporate':
-      // TODO: Implement in Phase 4
-      return <ModernMinimal resume={resume} />;
+      return <ProfessionalCorporate resume={resume} />;
     case 'elegant-two-column':
-      // TODO: Implement in Phase 4
+      // TODO: Implement elegant two-column
       return <ModernMinimal resume={resume} />;
     case 'creative-designer':
-      // TODO: Implement in Phase 4
+      // TODO: Implement creative designer
       return <ModernMinimal resume={resume} />;
     case 'ats-friendly':
-      // TODO: Implement in Phase 4
-      return <ModernMinimal resume={resume} />;
+      return <ATSFriendly resume={resume} />;
     default:
       return <ModernMinimal resume={resume} />;
   }

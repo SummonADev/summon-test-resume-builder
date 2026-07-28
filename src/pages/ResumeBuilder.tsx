@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import EditorSidebar from '@/components/EditorSidebar';
 import PreviewPanel from '@/components/PreviewPanel';
 import TemplateSelector from '@/components/TemplateSelector';
+import SettingsModal from '@/components/SettingsModal';
 import PersonalInfoForm from '@/components/sections/PersonalInfoForm';
 import SummaryForm from '@/components/sections/SummaryForm';
 import SkillsForm from '@/components/sections/SkillsForm';
@@ -19,6 +20,7 @@ import { exportResumeToPDF } from '@/lib/pdf-export';
 export default function ResumeBuilder() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [exporting, setExporting] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
   const resume = useResumeStore((state) => state.resume);
@@ -48,7 +50,7 @@ export default function ResumeBuilder() {
   };
 
   const handleSettings = () => {
-    alert('Settings coming in Phase 2');
+    setShowSettings(true);
   };
 
   const handleSelectTemplate = (template: TemplateName) => {
@@ -65,6 +67,9 @@ export default function ResumeBuilder() {
           onClose={() => setShowTemplateSelector(false)}
         />
       )}
+
+      {/* Settings Modal */}
+      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
 
       {/* Header */}
       <Header
