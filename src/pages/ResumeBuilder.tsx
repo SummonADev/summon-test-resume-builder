@@ -17,11 +17,12 @@ import { CertificationsForm } from '@/components/sections/CertificationsForm';
 import { AwardsForm } from '@/components/sections/AwardsForm';
 import { renderTemplate } from '@/lib/template-factory';
 import { exportResumeToPDF } from '@/lib/pdf-export';
+import { exportResumeToDocx } from '@/lib/docx-export';
 
 export default function ResumeBuilder() {
   const [exporting, setExporting] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
-  
+
   const resume = useResumeStore((state) => state.resume);
   const setTemplate = useResumeStore((state) => state.setTemplate);
   const undo = useResumeStore((state) => state.undo);
@@ -29,7 +30,7 @@ export default function ResumeBuilder() {
   const canUndo = useResumeStore((state) => state.canUndo());
   const canRedo = useResumeStore((state) => state.canRedo());
 
-  const handleExport = async () => {
+  const handleExportPdf = async () => {
     if (!previewRef.current) {
       alert('Preview not available');
       return;
@@ -37,9 +38,21 @@ export default function ResumeBuilder() {
 
     try {
       setExporting(true);
-      await exportResumeToPDF(resume, previewRef.current, `${resume.personal.fullName || 'resume'}.pdf`);
+      await exportResumeToPDF(resume, previewRef.current, `${resume.personalInfo.fullName || 'resume'}.pdf`);
     } catch (error) {
       alert('Failed to export PDF. Please try again.');
+      console.error(error);
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleExportDocx = async () => {
+    try {
+      setExporting(true);
+      await exportResumeToDocx(resume, `${resume.personalInfo.fullName || 'resume'}.docx`);
+    } catch (error) {
+      alert('Failed to export DOCX. Please try again.');
       console.error(error);
     } finally {
       setExporting(false);
@@ -49,7 +62,7 @@ export default function ResumeBuilder() {
   useKeyboardShortcuts({
     onCtrlZ: () => canUndo && undo(),
     onCtrlY: () => canRedo && redo(),
-    onCtrlShiftS: handleExport,
+    onCtrlShiftS: handleExportPdf,
   });
 
   const templates: Array<{ id: TemplateName; name: string }> = [
@@ -68,10 +81,11 @@ export default function ResumeBuilder() {
     <div className="flex flex-col h-screen bg-white">
       {/* Header */}
       <Header
-        onExport={handleExport}
+        onExportPdf={handleExportPdf}
+        onExportDocx={handleExportDocx}
         onSettings={() => alert('Settings coming soon')}
         isExporting={exporting}
-        templateName={templates.find(t => t.id === resume.template)?.name || 'Unknown'}
+        templateName={templates.find((t) => t.id === resume.template)?.name || 'Unknown'}
       />
 
       {/* Template Selector */}
