@@ -5,9 +5,10 @@ import { useResumeStore } from '@/store/resume-store';
 interface HeaderProps {
   onSidebarToggle: () => void;
   onExport: () => void;
+  onTemplateClick?: () => void;
 }
 
-export default function Header({ onSidebarToggle, onExport }: HeaderProps) {
+export default function Header({ onSidebarToggle, onExport, onTemplateClick }: HeaderProps) {
   const resume = useResumeStore((state) => state.resume);
   const canUndo = useResumeStore((state) => state.canUndo());
   const canRedo = useResumeStore((state) => state.canRedo());
@@ -28,7 +29,7 @@ export default function Header({ onSidebarToggle, onExport }: HeaderProps) {
           <h1 className="text-xl font-bold text-slate-900">{resume.name}</h1>
         </div>
 
-        {/* Center - History Controls */}
+        {/* Center - History Controls & Template */}
         <div className="hidden md:flex items-center gap-1">
           <button
             onClick={undo}
@@ -46,6 +47,15 @@ export default function Header({ onSidebarToggle, onExport }: HeaderProps) {
           >
             <Redo2 className="w-4 h-4" />
           </button>
+          {onTemplateClick && (
+            <button
+              onClick={onTemplateClick}
+              className="ml-4 px-3 py-1 text-sm bg-slate-100 hover:bg-slate-200 rounded transition-colors"
+              title="Change template"
+            >
+              Template
+            </button>
+          )}
         </div>
 
         {/* Right */}

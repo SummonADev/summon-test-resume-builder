@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useResumeStore } from '@/store/resume-store';
+import { TemplateName } from '@/types/resume';
 import Header from '@/components/Header';
 import EditorSidebar from '@/components/EditorSidebar';
 import PreviewPanel from '@/components/PreviewPanel';
+import TemplateSelector from '@/components/TemplateSelector';
 import PersonalInfoForm from '@/components/sections/PersonalInfoForm';
 import SummaryForm from '@/components/sections/SummaryForm';
 import SkillsForm from '@/components/sections/SkillsForm';
@@ -11,9 +13,13 @@ import EducationForm from '@/components/sections/EducationForm';
 import ProjectsForm from '@/components/sections/ProjectsForm';
 import CertificationsForm from '@/components/sections/CertificationsForm';
 import AwardsForm from '@/components/sections/AwardsForm';
+import { renderTemplate } from '@/lib/template-factory';
 
 export default function ResumeBuilder() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+  const resume = useResumeStore((state) => state.resume);
+  const setTemplate = useResumeStore((state) => state.setTemplate);
   const setPreviewMode = useResumeStore((state) => state.setPreviewMode);
   const previewMode = useResumeStore((state) => state.uiState.previewMode);
 
@@ -29,10 +35,27 @@ export default function ResumeBuilder() {
     alert('Settings coming in Phase 2');
   };
 
+  const handleSelectTemplate = (template: TemplateName) => {
+    setTemplate(template);
+  };
+
   return (
     <div className="flex flex-col h-screen bg-slate-50">
+      {/* Template Selector Modal */}
+      {showTemplateSelector && (
+        <TemplateSelector
+          currentTemplate={resume.template}
+          onSelect={handleSelectTemplate}
+          onClose={() => setShowTemplateSelector(false)}
+        />
+      )}
+
       {/* Header */}
-      <Header onSidebarToggle={() => setSidebarOpen(!sidebarOpen)} onExport={handleExport} />
+      <Header
+        onSidebarToggle={() => setSidebarOpen(!sidebarOpen)}
+        onExport={handleExport}
+        onTemplateClick={() => setShowTemplateSelector(true)}
+      />
 
       {/* Main Layout */}
       <div className="flex flex-1 overflow-hidden">
@@ -57,9 +80,7 @@ export default function ResumeBuilder() {
         {/* Preview Panel */}
         <PreviewPanel previewMode={previewMode} onModeChange={setPreviewMode}>
           <div className="p-8">
-            <div className="text-center text-slate-500">
-              <p>Resume preview coming in Phase 4</p>
-            </div>
+            {renderTemplate(resume)}
           </div>
         </PreviewPanel>
       </div>
