@@ -1,122 +1,162 @@
+import React from 'react';
 import { Resume } from '@/types/resume';
 
 interface ATSFriendlyProps {
   resume: Resume;
 }
 
-export default function ATSFriendly({ resume }: ATSFriendlyProps) {
-  const { personal, summary, experience, education, skills, projects, certifications, awards } = resume;
+export function ATSFriendly({ resume }: ATSFriendlyProps) {
+  const renderHTML = (html: string) => (
+    <div dangerouslySetInnerHTML={{ __html: html }} />
+  );
 
   return (
-    <div className="bg-white text-gray-900 font-lato print:p-0 p-0" style={{ fontFamily: 'Lato, Arial, sans-serif' }}>
+    <div className="font-lato text-black bg-white" style={{ fontSize: '12px', lineHeight: '1.5' }}>
       {/* Header */}
-      <div className="pb-3 mb-3 border-b border-gray-300">
-        <h1 className="text-2xl font-light text-gray-900">{personal.fullName}</h1>
-        {personal.professionalTitle && <p className="text-xs mt-1 text-gray-600">{personal.professionalTitle}</p>}
-      </div>
-
-      {/* Contact Info - Plain text, ATS-friendly */}
-      <div className="mb-4 text-xs space-y-0.5">
-        {personal.email && <p>{personal.email}</p>}
-        {personal.phone && <p>{personal.phone}</p>}
-        {personal.location && <p>{personal.location}</p>}
-        {personal.linkedin && <p>{personal.linkedin}</p>}
-        {personal.portfolio && <p>{personal.portfolio}</p>}
-        {personal.github && <p>{personal.github}</p>}
+      <div className="mb-4">
+        <p style={{ fontSize: '16px', fontWeight: 'bold' }}>{resume.personal.fullName}</p>
+        {resume.personal.professionalTitle && (
+          <p>{resume.personal.professionalTitle}</p>
+        )}
+        
+        {/* Contact Info */}
+        <div className="mt-2">
+          {resume.personal.email && <p>{resume.personal.email}</p>}
+          {resume.personal.phone && <p>{resume.personal.phone}</p>}
+          {resume.personal.location && <p>{resume.personal.location}</p>}
+        </div>
       </div>
 
       {/* Summary */}
-      {summary.isVisible && summary.content && (
+      {resume.sections.summary?.isVisible && resume.sections.summary?.content && (
         <div className="mb-4">
-          <h2 className="text-sm font-light text-gray-900 uppercase tracking-wide mb-1">{summary.customTitle}</h2>
-          <p className="text-xs leading-relaxed whitespace-pre-wrap text-gray-700">{summary.content}</p>
+          <p style={{ fontWeight: 'bold' }}>
+            {resume.sections.summary?.customTitle || 'PROFESSIONAL SUMMARY'}
+          </p>
+          <div className="text-black leading-relaxed mt-1">
+            {renderHTML(resume.sections.summary.content)}
+          </div>
         </div>
       )}
 
       {/* Experience */}
-      {experience.isVisible && experience.items.length > 0 && (
+      {resume.sections.experience?.isVisible && resume.sections.experience?.items?.length > 0 && (
         <div className="mb-4">
-          <h2 className="text-sm font-light text-gray-900 uppercase tracking-wide mb-2">{experience.customTitle}</h2>
-          {experience.items.map((exp) => (
-            <div key={exp.id} className="mb-2">
-              <p className="text-xs font-light text-gray-900">{exp.position}</p>
-              <p className="text-xs text-gray-600">{exp.company}</p>
-              {exp.location && <p className="text-xs text-gray-600">{exp.location}</p>}
-              <p className="text-xs text-gray-500">
-                {exp.startDate} to {exp.isCurrentPosition ? 'Present' : exp.endDate}
-              </p>
-              {exp.responsibilities && <p className="text-xs mt-1 text-gray-700 whitespace-pre-wrap">{exp.responsibilities}</p>}
-              {exp.achievements && <p className="text-xs mt-1 text-gray-700 whitespace-pre-wrap">{exp.achievements}</p>}
-            </div>
-          ))}
+          <p style={{ fontWeight: 'bold' }}>
+            {resume.sections.experience?.customTitle || 'EXPERIENCE'}
+          </p>
+          <div className="mt-1">
+            {resume.sections.experience.items.map((exp, idx) => (
+              <div key={idx} className="mb-2">
+                <p style={{ fontWeight: 'bold' }}>{exp.position} at {exp.company}</p>
+                <p>{exp.location} | {exp.startDate} to {exp.currentPosition ? 'Present' : exp.endDate}</p>
+                <div className="mt-1 text-black">
+                  {renderHTML(exp.responsibilities)}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       {/* Education */}
-      {education.isVisible && education.items.length > 0 && (
+      {resume.sections.education?.isVisible && resume.sections.education?.items?.length > 0 && (
         <div className="mb-4">
-          <h2 className="text-sm font-light text-gray-900 uppercase tracking-wide mb-2">{education.customTitle}</h2>
-          {education.items.map((edu) => (
-            <div key={edu.id} className="mb-2">
-              <p className="text-xs font-light text-gray-900">{edu.degree} in {edu.fieldOfStudy}</p>
-              <p className="text-xs text-gray-600">{edu.institution}</p>
-              {edu.gpa && <p className="text-xs text-gray-600">GPA: {edu.gpa}</p>}
-              <p className="text-xs text-gray-500">
-                {edu.startDate} to {edu.endDate}
-              </p>
-            </div>
-          ))}
+          <p style={{ fontWeight: 'bold' }}>
+            {resume.sections.education?.customTitle || 'EDUCATION'}
+          </p>
+          <div className="mt-1">
+            {resume.sections.education.items.map((edu, idx) => (
+              <div key={idx} className="mb-1">
+                <p style={{ fontWeight: 'bold' }}>{edu.degree}</p>
+                <p>{edu.institution} - {edu.fieldOfStudy}</p>
+                <p>{edu.startDate} to {edu.endDate}</p>
+                {edu.gpa && <p>GPA: {edu.gpa}</p>}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       {/* Skills */}
-      {skills.isVisible && skills.items.length > 0 && (
+      {resume.sections.skills?.isVisible && resume.sections.skills?.items?.length > 0 && (
         <div className="mb-4">
-          <h2 className="text-sm font-light text-gray-900 uppercase tracking-wide mb-1">{skills.customTitle}</h2>
-          <p className="text-xs text-gray-700">{skills.items.map((s) => s.name).join(', ')}</p>
+          <p style={{ fontWeight: 'bold' }}>
+            {resume.sections.skills?.customTitle || 'SKILLS'}
+          </p>
+          <p className="mt-1">
+            {resume.sections.skills.items.map(skill => skill.name).join(', ')}
+          </p>
         </div>
       )}
 
       {/* Projects */}
-      {projects.isVisible && projects.items.length > 0 && (
+      {resume.sections.projects?.isVisible && resume.sections.projects?.items?.length > 0 && (
         <div className="mb-4">
-          <h2 className="text-sm font-light text-gray-900 uppercase tracking-wide mb-2">{projects.customTitle}</h2>
-          {projects.items.map((proj) => (
-            <div key={proj.id} className="mb-2">
-              <p className="text-xs font-light text-gray-900">{proj.name}</p>
-              {proj.technologies.length > 0 && <p className="text-xs text-gray-600">{proj.technologies.join(', ')}</p>}
-              {proj.description && <p className="text-xs mt-0.5 text-gray-700">{proj.description}</p>}
-            </div>
-          ))}
+          <p style={{ fontWeight: 'bold' }}>
+            {resume.sections.projects?.customTitle || 'PROJECTS'}
+          </p>
+          <div className="mt-1">
+            {resume.sections.projects.items.map((project, idx) => (
+              <div key={idx} className="mb-2">
+                <p style={{ fontWeight: 'bold' }}>{project.name}</p>
+                {project.technologies && <p>Technologies: {project.technologies}</p>}
+                <div className="text-black">
+                  {renderHTML(project.description)}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       {/* Certifications */}
-      {certifications.isVisible && certifications.items.length > 0 && (
+      {resume.sections.certifications?.isVisible && resume.sections.certifications?.items?.length > 0 && (
         <div className="mb-4">
-          <h2 className="text-sm font-light text-gray-900 uppercase tracking-wide mb-2">{certifications.customTitle}</h2>
-          {certifications.items.map((cert) => (
-            <div key={cert.id} className="mb-2">
-              <p className="text-xs font-light text-gray-900">{cert.name}</p>
-              <p className="text-xs text-gray-600">{cert.organization}</p>
-              {cert.issueDate && <p className="text-xs text-gray-600">Issued: {cert.issueDate}</p>}
-            </div>
-          ))}
+          <p style={{ fontWeight: 'bold' }}>
+            {resume.sections.certifications?.customTitle || 'CERTIFICATIONS'}
+          </p>
+          <div className="mt-1">
+            {resume.sections.certifications.items.map((cert, idx) => (
+              <p key={idx} className="mb-1">
+                {cert.name} - {cert.issuer} ({cert.issueDate})
+              </p>
+            ))}
+          </div>
         </div>
       )}
 
       {/* Awards */}
-      {awards.isVisible && awards.items.length > 0 && (
+      {resume.sections.awards?.isVisible && resume.sections.awards?.items?.length > 0 && (
         <div className="mb-4">
-          <h2 className="text-sm font-light text-gray-900 uppercase tracking-wide mb-2">{awards.customTitle}</h2>
-          {awards.items.map((award) => (
-            <div key={award.id} className="mb-2">
-              <p className="text-xs font-light text-gray-900">{award.title}</p>
-              <p className="text-xs text-gray-600">{award.organization}</p>
-            </div>
-          ))}
+          <p style={{ fontWeight: 'bold' }}>
+            {resume.sections.awards?.customTitle || 'AWARDS'}
+          </p>
+          <div className="mt-1">
+            {resume.sections.awards.items.map((award, idx) => (
+              <p key={idx} className="mb-1">
+                {award.title} - {award.organization} ({award.date})
+              </p>
+            ))}
+          </div>
         </div>
       )}
+
+      {/* Custom Sections */}
+      {resume.customSections?.map((section, sectionIdx) => (
+        section.isVisible && (
+          <div key={sectionIdx} className="mb-4">
+            <p style={{ fontWeight: 'bold' }}>{section.title.toUpperCase()}</p>
+            <div className="mt-1">
+              {section.items?.map((item, itemIdx) => (
+                <div key={itemIdx} className="text-black">
+                  {renderHTML(item.content)}
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      ))}
     </div>
   );
 }

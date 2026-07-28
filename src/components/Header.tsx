@@ -1,66 +1,41 @@
-import Button from './Button';
-import { Undo2, Redo2, Download, Settings } from 'lucide-react';
-import { useResumeStore } from '@/store/resume-store';
+import { Download, Settings } from 'lucide-react';
+import { Button } from './Button';
 
 interface HeaderProps {
-  onExport: () => void | Promise<void>;
-  onSettingsClick?: () => void;
-  exporting?: boolean;
+  onExport: () => void;
+  onSettings: () => void;
+  isExporting: boolean;
+  templateName: string;
 }
 
-export default function Header({ onExport, onSettingsClick, exporting }: HeaderProps) {
-  const canUndo = useResumeStore((state) => state.canUndo());
-  const canRedo = useResumeStore((state) => state.canRedo());
-  const undo = useResumeStore((state) => state.undo);
-  const redo = useResumeStore((state) => state.redo);
-
+export function Header({ onExport, onSettings, isExporting, templateName }: HeaderProps) {
   return (
-    <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
-      <div className="px-6 py-3 flex items-center justify-between gap-4">
-        {/* Left */}
-        <h1 className="text-base font-light text-gray-900 tracking-tight">Resume Builder</h1>
-
-        {/* Right - Controls */}
-        <div className="flex items-center gap-1">
-          <button
-            onClick={undo}
-            disabled={!canUndo}
-            className="p-2 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed rounded transition-colors"
-            title="Undo (Ctrl+Z)"
+    <header className="border-b border-black bg-white">
+      <div className="px-8 py-6 flex items-center justify-between">
+        <div className="flex-1">
+          <h1 className="text-3xl font-bold text-black">Resume Builder</h1>
+          <p className="text-sm text-black mt-2 font-light">Template: {templateName}</p>
+        </div>
+        
+        <div className="flex items-center gap-6">
+          <Button 
+            onClick={onSettings}
+            variant="secondary"
+            size="lg"
+            className="flex items-center gap-2"
           >
-            <Undo2 className="w-4 h-4 text-gray-600" />
-          </button>
-          <button
-            onClick={redo}
-            disabled={!canRedo}
-            className="p-2 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed rounded transition-colors"
-            title="Redo (Ctrl+Y)"
-          >
-            <Redo2 className="w-4 h-4 text-gray-600" />
-          </button>
+            <Settings size={20} />
+            Manage
+          </Button>
           
-          <div className="w-px h-5 bg-gray-200 mx-1" />
-          
-          {onSettingsClick && (
-            <button
-              onClick={onSettingsClick}
-              className="p-2 hover:bg-gray-50 rounded transition-colors"
-              title="Settings"
-            >
-              <Settings className="w-4 h-4 text-gray-600" />
-            </button>
-          )}
-          
-          <Button
-            variant="primary"
-            size="sm"
+          <Button 
             onClick={onExport}
-            loading={exporting}
-            className="gap-2 flex items-center ml-2"
-            disabled={exporting}
+            disabled={isExporting}
+            size="lg"
+            className="flex items-center gap-2"
           >
-            <Download className="w-4 h-4" />
-            <span className="text-sm">Export</span>
+            <Download size={20} />
+            {isExporting ? 'Exporting...' : 'Export PDF'}
           </Button>
         </div>
       </div>

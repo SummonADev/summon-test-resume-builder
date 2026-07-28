@@ -1,91 +1,72 @@
+import React from 'react';
 import { Resume } from '@/types/resume';
-import { format } from 'date-fns';
 
 interface ProfessionalCorporateProps {
   resume: Resume;
 }
 
-const formatDate = (dateStr: string) => {
-  if (!dateStr) return '';
-  try {
-    const [year, month] = dateStr.split('-');
-    return format(new Date(parseInt(year), parseInt(month) - 1), 'MMM yyyy');
-  } catch {
-    return dateStr;
-  }
-};
-
-export default function ProfessionalCorporate({ resume }: ProfessionalCorporateProps) {
-  const { personal, summary, experience, education, skills, projects, certifications, awards } = resume;
+export function ProfessionalCorporate({ resume }: ProfessionalCorporateProps) {
+  const renderHTML = (html: string) => (
+    <div dangerouslySetInnerHTML={{ __html: html }} />
+  );
 
   return (
-    <div className="bg-white text-gray-900 font-lato print:p-0 p-0" style={{ fontFamily: 'Lato, sans-serif' }}>
-      {/* Header */}
-      <div className="bg-gray-900 text-white px-6 py-6 mb-6">
-        <h1 className="text-3xl font-light text-white">{personal.fullName}</h1>
-        {personal.professionalTitle && <p className="text-sm mt-2 text-gray-300 font-light">{personal.professionalTitle}</p>}
+    <div className="font-lato text-black bg-white" style={{ fontSize: '11px', lineHeight: '1.6' }}>
+      {/* Header with black background */}
+      <div className="bg-black text-white px-8 py-6 mb-6">
+        <h1 className="text-4xl font-bold">{resume.personal.fullName}</h1>
+        {resume.personal.professionalTitle && (
+          <p className="text-lg font-light mt-2">{resume.personal.professionalTitle}</p>
+        )}
+        
+        {/* Contact Info */}
+        <div className="flex flex-wrap gap-6 mt-4 text-xs">
+          {resume.personal.email && (
+            <a href={`mailto:${resume.personal.email}`} className="text-white hover:underline">
+              {resume.personal.email}
+            </a>
+          )}
+          {resume.personal.phone && (
+            <a href={`tel:${resume.personal.phone}`} className="text-white hover:underline">
+              {resume.personal.phone}
+            </a>
+          )}
+          {resume.personal.location && (
+            <span className="text-white">{resume.personal.location}</span>
+          )}
+        </div>
       </div>
 
-      <div className="px-6">
-        {/* Contact Info */}
-        <div className="flex flex-wrap gap-3 text-xs mb-6 text-gray-600">
-          {personal.email && <a href={`mailto:${personal.email}`} className="hover:text-gray-900">{personal.email}</a>}
-          {personal.phone && <span>•</span>}
-          {personal.phone && <a href={`tel:${personal.phone}`} className="hover:text-gray-900">{personal.phone}</a>}
-          {personal.location && <span>•</span>}
-          {personal.location && <span>{personal.location}</span>}
-        </div>
-
-        {/* Links */}
-        {(personal.linkedin || personal.portfolio || personal.github) && (
-          <div className="flex flex-wrap gap-4 text-xs mb-6">
-            {personal.linkedin && (
-              <a href={personal.linkedin} className="text-gray-600 hover:text-gray-900 underline">
-                LinkedIn
-              </a>
-            )}
-            {personal.portfolio && (
-              <a href={personal.portfolio} className="text-gray-600 hover:text-gray-900 underline">
-                Portfolio
-              </a>
-            )}
-            {personal.github && (
-              <a href={personal.github} className="text-gray-600 hover:text-gray-900 underline">
-                GitHub
-              </a>
-            )}
-          </div>
-        )}
-
+      <div className="px-8">
         {/* Summary */}
-        {summary.isVisible && summary.content && (
+        {resume.sections.summary?.isVisible && resume.sections.summary?.content && (
           <div className="mb-6">
-            <h2 className="text-xs font-light text-gray-900 uppercase tracking-widest border-b border-gray-300 pb-2 mb-3">
-              {summary.customTitle}
+            <h2 className="text-sm font-bold text-black border-b-2 border-black pb-2 mb-3">
+              {resume.sections.summary?.customTitle || 'PROFESSIONAL SUMMARY'}
             </h2>
-            <p className="text-xs leading-relaxed text-gray-700 whitespace-pre-wrap">{summary.content}</p>
+            <div className="text-xs text-black leading-relaxed">
+              {renderHTML(resume.sections.summary.content)}
+            </div>
           </div>
         )}
 
         {/* Experience */}
-        {experience.isVisible && experience.items.length > 0 && (
+        {resume.sections.experience?.isVisible && resume.sections.experience?.items?.length > 0 && (
           <div className="mb-6">
-            <h2 className="text-xs font-light text-gray-900 uppercase tracking-widest border-b border-gray-300 pb-2 mb-3">
-              {experience.customTitle}
+            <h2 className="text-sm font-bold text-black border-b-2 border-black pb-2 mb-3">
+              {resume.sections.experience?.customTitle || 'EXPERIENCE'}
             </h2>
             <div className="space-y-4">
-              {experience.items.map((exp) => (
-                <div key={exp.id}>
+              {resume.sections.experience.items.map((exp, idx) => (
+                <div key={idx} className="text-xs">
                   <div className="flex justify-between items-baseline">
-                    <h3 className="text-xs font-light text-gray-900">{exp.position}</h3>
-                    <span className="text-xs text-gray-600">
-                      {formatDate(exp.startDate)} – {exp.isCurrentPosition ? 'Present' : formatDate(exp.endDate)}
-                    </span>
+                    <p className="font-bold text-black">{exp.position}</p>
+                    <p className="font-light text-black">{exp.startDate} – {exp.currentPosition ? 'Present' : exp.endDate}</p>
                   </div>
-                  <p className="text-xs text-gray-600 font-light">{exp.company}</p>
-                  {exp.location && <p className="text-xs text-gray-500">{exp.location}</p>}
-                  {exp.responsibilities && <p className="text-xs mt-1 text-gray-700 whitespace-pre-wrap">{exp.responsibilities}</p>}
-                  {exp.achievements && <p className="text-xs mt-1 text-gray-700 whitespace-pre-wrap">{exp.achievements}</p>}
+                  <p className="text-black">{exp.company} | {exp.location}</p>
+                  <div className="mt-2 text-black leading-relaxed">
+                    {renderHTML(exp.responsibilities)}
+                  </div>
                 </div>
               ))}
             </div>
@@ -93,21 +74,20 @@ export default function ProfessionalCorporate({ resume }: ProfessionalCorporateP
         )}
 
         {/* Education */}
-        {education.isVisible && education.items.length > 0 && (
+        {resume.sections.education?.isVisible && resume.sections.education?.items?.length > 0 && (
           <div className="mb-6">
-            <h2 className="text-xs font-light text-gray-900 uppercase tracking-widest border-b border-gray-300 pb-2 mb-3">
-              {education.customTitle}
+            <h2 className="text-sm font-bold text-black border-b-2 border-black pb-2 mb-3">
+              {resume.sections.education?.customTitle || 'EDUCATION'}
             </h2>
             <div className="space-y-3">
-              {education.items.map((edu) => (
-                <div key={edu.id}>
+              {resume.sections.education.items.map((edu, idx) => (
+                <div key={idx} className="text-xs">
                   <div className="flex justify-between items-baseline">
-                    <h3 className="text-xs font-light text-gray-900">{edu.degree} in {edu.fieldOfStudy}</h3>
-                    <span className="text-xs text-gray-600">
-                      {formatDate(edu.startDate)} – {formatDate(edu.endDate)}
-                    </span>
+                    <p className="font-bold text-black">{edu.degree}</p>
+                    <p className="font-light text-black">{edu.startDate} – {edu.endDate}</p>
                   </div>
-                  <p className="text-xs text-gray-600 font-light">{edu.institution}</p>
+                  <p className="text-black">{edu.institution} • {edu.fieldOfStudy}</p>
+                  {edu.gpa && <p className="font-light text-black">GPA: {edu.gpa}</p>}
                 </div>
               ))}
             </div>
@@ -115,26 +95,38 @@ export default function ProfessionalCorporate({ resume }: ProfessionalCorporateP
         )}
 
         {/* Skills */}
-        {skills.isVisible && skills.items.length > 0 && (
+        {resume.sections.skills?.isVisible && resume.sections.skills?.items?.length > 0 && (
           <div className="mb-6">
-            <h2 className="text-xs font-light text-gray-900 uppercase tracking-widest border-b border-gray-300 pb-2 mb-3">
-              {skills.customTitle}
+            <h2 className="text-sm font-bold text-black border-b-2 border-black pb-2 mb-3">
+              {resume.sections.skills?.customTitle || 'SKILLS'}
             </h2>
-            <p className="text-xs text-gray-700">{skills.items.map((s) => s.name).join(', ')}</p>
+            <div className="text-xs text-black">
+              <div className="grid grid-cols-2 gap-3">
+                {resume.sections.skills.items.map((skill, idx) => (
+                  <span key={idx} className="flex items-center">• {skill.name}</span>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
         {/* Projects */}
-        {projects.isVisible && projects.items.length > 0 && (
+        {resume.sections.projects?.isVisible && resume.sections.projects?.items?.length > 0 && (
           <div className="mb-6">
-            <h2 className="text-xs font-light text-gray-900 uppercase tracking-widest border-b border-gray-300 pb-2 mb-3">
-              {projects.customTitle}
+            <h2 className="text-sm font-bold text-black border-b-2 border-black pb-2 mb-3">
+              {resume.sections.projects?.customTitle || 'PROJECTS'}
             </h2>
             <div className="space-y-3">
-              {projects.items.map((proj) => (
-                <div key={proj.id}>
-                  <h3 className="text-xs font-light text-gray-900">{proj.name}</h3>
-                  {proj.description && <p className="text-xs mt-1 text-gray-700 whitespace-pre-wrap">{proj.description}</p>}
+              {resume.sections.projects.items.map((project, idx) => (
+                <div key={idx} className="text-xs">
+                  <div className="flex justify-between items-baseline">
+                    <p className="font-bold text-black">{project.name}</p>
+                    {project.duration && <p className="font-light text-black">{project.duration}</p>}
+                  </div>
+                  {project.technologies && <p className="font-light text-black">{project.technologies}</p>}
+                  <div className="mt-1 text-black leading-relaxed">
+                    {renderHTML(project.description)}
+                  </div>
                 </div>
               ))}
             </div>
@@ -142,16 +134,16 @@ export default function ProfessionalCorporate({ resume }: ProfessionalCorporateP
         )}
 
         {/* Certifications */}
-        {certifications.isVisible && certifications.items.length > 0 && (
+        {resume.sections.certifications?.isVisible && resume.sections.certifications?.items?.length > 0 && (
           <div className="mb-6">
-            <h2 className="text-xs font-light text-gray-900 uppercase tracking-widest border-b border-gray-300 pb-2 mb-3">
-              {certifications.customTitle}
+            <h2 className="text-sm font-bold text-black border-b-2 border-black pb-2 mb-3">
+              {resume.sections.certifications?.customTitle || 'CERTIFICATIONS'}
             </h2>
             <div className="space-y-2">
-              {certifications.items.map((cert) => (
-                <div key={cert.id}>
-                  <h3 className="text-xs font-light text-gray-900">{cert.name}</h3>
-                  <p className="text-xs text-gray-600">{cert.organization}</p>
+              {resume.sections.certifications.items.map((cert, idx) => (
+                <div key={idx} className="text-xs">
+                  <p className="font-bold text-black">{cert.name}</p>
+                  <p className="font-light text-black">{cert.issuer} • {cert.issueDate}</p>
                 </div>
               ))}
             </div>
@@ -159,21 +151,39 @@ export default function ProfessionalCorporate({ resume }: ProfessionalCorporateP
         )}
 
         {/* Awards */}
-        {awards.isVisible && awards.items.length > 0 && (
+        {resume.sections.awards?.isVisible && resume.sections.awards?.items?.length > 0 && (
           <div className="mb-6">
-            <h2 className="text-xs font-light text-gray-900 uppercase tracking-widest border-b border-gray-300 pb-2 mb-3">
-              {awards.customTitle}
+            <h2 className="text-sm font-bold text-black border-b-2 border-black pb-2 mb-3">
+              {resume.sections.awards?.customTitle || 'AWARDS'}
             </h2>
             <div className="space-y-2">
-              {awards.items.map((award) => (
-                <div key={award.id}>
-                  <h3 className="text-xs font-light text-gray-900">{award.title}</h3>
-                  <p className="text-xs text-gray-600">{award.organization}</p>
+              {resume.sections.awards.items.map((award, idx) => (
+                <div key={idx} className="text-xs">
+                  <p className="font-bold text-black">{award.title}</p>
+                  <p className="font-light text-black">{award.organization} • {award.date}</p>
                 </div>
               ))}
             </div>
           </div>
         )}
+
+        {/* Custom Sections */}
+        {resume.customSections?.map((section, sectionIdx) => (
+          section.isVisible && (
+            <div key={sectionIdx} className="mb-6">
+              <h2 className="text-sm font-bold text-black border-b-2 border-black pb-2 mb-3">
+                {section.title.toUpperCase()}
+              </h2>
+              <div className="space-y-2">
+                {section.items?.map((item, itemIdx) => (
+                  <div key={itemIdx} className="text-xs text-black leading-relaxed">
+                    {renderHTML(item.content)}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        ))}
       </div>
     </div>
   );

@@ -1,49 +1,51 @@
+import React from 'react';
 import { Resume } from '@/types/resume';
-import { format } from 'date-fns';
 
 interface ModernMinimalProps {
   resume: Resume;
 }
 
-const formatDate = (dateStr: string) => {
-  if (!dateStr) return '';
-  try {
-    const [year, month] = dateStr.split('-');
-    return format(new Date(parseInt(year), parseInt(month) - 1), 'MMM yyyy');
-  } catch {
-    return dateStr;
-  }
-};
-
-export default function ModernMinimal({ resume }: ModernMinimalProps) {
-  const { personal, summary, experience, education, skills, projects, certifications, awards } = resume;
+export function ModernMinimal({ resume }: ModernMinimalProps) {
+  const renderHTML = (html: string) => (
+    <div dangerouslySetInnerHTML={{ __html: html }} />
+  );
 
   return (
-    <div className="bg-white text-gray-900 font-lato print:p-0 p-0" style={{ fontFamily: 'Lato, sans-serif' }}>
+    <div className="font-lato text-black bg-white" style={{ fontSize: '11px', lineHeight: '1.6' }}>
       {/* Header */}
-      <div className="pb-4 mb-6 border-b border-gray-300">
-        <h1 className="text-4xl font-light text-gray-900 mb-1">{personal.fullName}</h1>
-        {personal.professionalTitle && (
-          <p className="text-sm text-gray-600 font-light">{personal.professionalTitle}</p>
+      <div className="border-b-2 border-black pb-4 mb-6">
+        <h1 className="text-3xl font-bold text-black">{resume.personal.fullName}</h1>
+        {resume.personal.professionalTitle && (
+          <p className="text-lg font-light text-black mt-1">{resume.personal.professionalTitle}</p>
         )}
-        <div className="flex flex-wrap gap-4 text-xs mt-3 text-gray-600">
-          {personal.email && <a href={`mailto:${personal.email}`} className="hover:text-gray-900">{personal.email}</a>}
-          {personal.phone && <a href={`tel:${personal.phone}`} className="hover:text-gray-900">{personal.phone}</a>}
-          {personal.location && <span>{personal.location}</span>}
-        </div>
-        <div className="flex flex-wrap gap-4 text-xs mt-2">
-          {personal.linkedin && (
-            <a href={personal.linkedin} className="text-gray-600 hover:text-gray-900 underline">
+        
+        {/* Contact Info */}
+        <div className="flex flex-wrap gap-6 mt-4 text-xs">
+          {resume.personal.email && (
+            <a href={`mailto:${resume.personal.email}`} className="text-black hover:underline">
+              {resume.personal.email}
+            </a>
+          )}
+          {resume.personal.phone && (
+            <a href={`tel:${resume.personal.phone}`} className="text-black hover:underline">
+              {resume.personal.phone}
+            </a>
+          )}
+          {resume.personal.location && (
+            <span className="text-black">{resume.personal.location}</span>
+          )}
+          {resume.personal.linkedin && (
+            <a href={resume.personal.linkedin} target="_blank" rel="noopener noreferrer" className="text-black hover:underline">
               LinkedIn
             </a>
           )}
-          {personal.portfolio && (
-            <a href={personal.portfolio} className="text-gray-600 hover:text-gray-900 underline">
+          {resume.personal.portfolio && (
+            <a href={resume.personal.portfolio} target="_blank" rel="noopener noreferrer" className="text-black hover:underline">
               Portfolio
             </a>
           )}
-          {personal.github && (
-            <a href={personal.github} className="text-gray-600 hover:text-gray-900 underline">
+          {resume.personal.github && (
+            <a href={resume.personal.github} target="_blank" rel="noopener noreferrer" className="text-black hover:underline">
               GitHub
             </a>
           )}
@@ -51,34 +53,34 @@ export default function ModernMinimal({ resume }: ModernMinimalProps) {
       </div>
 
       {/* Summary */}
-      {summary.isVisible && summary.content && (
+      {resume.sections.summary?.isVisible && resume.sections.summary?.content && (
         <div className="mb-6">
-          <h2 className="text-sm font-light text-gray-900 uppercase tracking-wide mb-2 border-b border-gray-200 pb-2">
-            {summary.customTitle}
+          <h2 className="text-base font-bold text-black border-b border-black pb-2 mb-3">
+            {resume.sections.summary?.customTitle || 'Professional Summary'}
           </h2>
-          <p className="text-xs leading-relaxed text-gray-700 whitespace-pre-wrap">{summary.content}</p>
+          <div className="text-xs text-black leading-relaxed">
+            {renderHTML(resume.sections.summary.content)}
+          </div>
         </div>
       )}
 
       {/* Experience */}
-      {experience.isVisible && experience.items.length > 0 && (
+      {resume.sections.experience?.isVisible && resume.sections.experience?.items?.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-sm font-light text-gray-900 uppercase tracking-wide mb-3 border-b border-gray-200 pb-2">
-            {experience.customTitle}
+          <h2 className="text-base font-bold text-black border-b border-black pb-2 mb-3">
+            {resume.sections.experience?.customTitle || 'Experience'}
           </h2>
           <div className="space-y-3">
-            {experience.items.map((exp) => (
-              <div key={exp.id}>
+            {resume.sections.experience.items.map((exp, idx) => (
+              <div key={idx} className="text-xs">
                 <div className="flex justify-between items-baseline">
-                  <h3 className="text-xs font-light text-gray-900">{exp.position}</h3>
-                  <span className="text-xs text-gray-600 ml-2">
-                    {formatDate(exp.startDate)} – {exp.isCurrentPosition ? 'Present' : formatDate(exp.endDate)}
-                  </span>
+                  <p className="font-bold text-black">{exp.position}</p>
+                  <p className="font-light text-black">{exp.startDate} – {exp.currentPosition ? 'Present' : exp.endDate}</p>
                 </div>
-                <p className="text-xs text-gray-600 font-light">{exp.company}</p>
-                {exp.location && <p className="text-xs text-gray-500">{exp.location}</p>}
-                {exp.responsibilities && <p className="text-xs mt-1 text-gray-700 whitespace-pre-wrap">{exp.responsibilities}</p>}
-                {exp.achievements && <p className="text-xs mt-1 text-gray-700 whitespace-pre-wrap">{exp.achievements}</p>}
+                <p className="font-light text-black">{exp.company} • {exp.location}</p>
+                <div className="mt-1 text-black leading-relaxed">
+                  {renderHTML(exp.responsibilities)}
+                </div>
               </div>
             ))}
           </div>
@@ -86,25 +88,25 @@ export default function ModernMinimal({ resume }: ModernMinimalProps) {
       )}
 
       {/* Education */}
-      {education.isVisible && education.items.length > 0 && (
+      {resume.sections.education?.isVisible && resume.sections.education?.items?.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-sm font-light text-gray-900 uppercase tracking-wide mb-3 border-b border-gray-200 pb-2">
-            {education.customTitle}
+          <h2 className="text-base font-bold text-black border-b border-black pb-2 mb-3">
+            {resume.sections.education?.customTitle || 'Education'}
           </h2>
           <div className="space-y-3">
-            {education.items.map((edu) => (
-              <div key={edu.id}>
+            {resume.sections.education.items.map((edu, idx) => (
+              <div key={idx} className="text-xs">
                 <div className="flex justify-between items-baseline">
-                  <h3 className="text-xs font-light text-gray-900">
-                    {edu.degree} in {edu.fieldOfStudy}
-                  </h3>
-                  <span className="text-xs text-gray-600 ml-2">
-                    {formatDate(edu.startDate)} – {formatDate(edu.endDate)}
-                  </span>
+                  <p className="font-bold text-black">{edu.degree}</p>
+                  <p className="font-light text-black">{edu.startDate} – {edu.endDate}</p>
                 </div>
-                <p className="text-xs text-gray-600 font-light">{edu.institution}</p>
-                {edu.gpa && <p className="text-xs text-gray-500">GPA: {edu.gpa}</p>}
-                {edu.description && <p className="text-xs mt-1 text-gray-700 whitespace-pre-wrap">{edu.description}</p>}
+                <p className="text-black">{edu.institution} • {edu.fieldOfStudy}</p>
+                {edu.gpa && <p className="font-light text-black">GPA: {edu.gpa}</p>}
+                {edu.description && (
+                  <div className="mt-1 text-black leading-relaxed">
+                    {renderHTML(edu.description)}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -112,62 +114,52 @@ export default function ModernMinimal({ resume }: ModernMinimalProps) {
       )}
 
       {/* Skills */}
-      {skills.isVisible && skills.items.length > 0 && (
+      {resume.sections.skills?.isVisible && resume.sections.skills?.items?.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-sm font-light text-gray-900 uppercase tracking-wide mb-2 border-b border-gray-200 pb-2">
-            {skills.customTitle}
+          <h2 className="text-base font-bold text-black border-b border-black pb-2 mb-3">
+            {resume.sections.skills?.customTitle || 'Skills'}
           </h2>
-          {skills.groupByCategory ? (
-            <div className="space-y-2">
-              {Object.entries(
-                skills.items.reduce(
-                  (acc, skill) => {
-                    if (!acc[skill.category]) acc[skill.category] = [];
-                    acc[skill.category].push(skill);
-                    return acc;
-                  },
-                  {} as Record<string, typeof skills.items>
-                )
-              ).map(([category, categorySkills]) => (
-                <div key={category}>
-                  <p className="text-xs text-gray-700">
-                    <span className="font-light">{category}:</span> {categorySkills.map((s) => s.name).join(', ')}
-                  </p>
-                </div>
+          <div className="text-xs text-black">
+            <div className="flex flex-wrap gap-4">
+              {resume.sections.skills.items.map((skill, idx) => (
+                <span key={idx}>{skill.name}</span>
               ))}
             </div>
-          ) : (
-            <p className="text-xs text-gray-700">{skills.items.map((s) => s.name).join(', ')}</p>
-          )}
+          </div>
         </div>
       )}
 
       {/* Projects */}
-      {projects.isVisible && projects.items.length > 0 && (
+      {resume.sections.projects?.isVisible && resume.sections.projects?.items?.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-sm font-light text-gray-900 uppercase tracking-wide mb-3 border-b border-gray-200 pb-2">
-            {projects.customTitle}
+          <h2 className="text-base font-bold text-black border-b border-black pb-2 mb-3">
+            {resume.sections.projects?.customTitle || 'Projects'}
           </h2>
           <div className="space-y-3">
-            {projects.items.map((proj) => (
-              <div key={proj.id}>
-                <h3 className="text-xs font-light text-gray-900">{proj.name}</h3>
-                {proj.technologies.length > 0 && (
-                  <p className="text-xs text-gray-600 mt-0.5">{proj.technologies.join(', ')}</p>
-                )}
-                {proj.description && <p className="text-xs mt-1 text-gray-700 whitespace-pre-wrap">{proj.description}</p>}
-                <div className="flex gap-3 mt-1 text-xs">
-                  {proj.projectUrl && (
-                    <a href={proj.projectUrl} className="text-gray-600 hover:text-gray-900 underline">
-                      Live
-                    </a>
-                  )}
-                  {proj.githubUrl && (
-                    <a href={proj.githubUrl} className="text-gray-600 hover:text-gray-900 underline">
-                      GitHub
-                    </a>
-                  )}
+            {resume.sections.projects.items.map((project, idx) => (
+              <div key={idx} className="text-xs">
+                <div className="flex justify-between items-baseline">
+                  <p className="font-bold text-black">{project.name}</p>
+                  {project.duration && <p className="font-light text-black">{project.duration}</p>}
                 </div>
+                {project.technologies && <p className="font-light text-black">{project.technologies}</p>}
+                <div className="mt-1 text-black leading-relaxed">
+                  {renderHTML(project.description)}
+                </div>
+                {(project.projectUrl || project.githubUrl) && (
+                  <div className="flex gap-3 mt-1">
+                    {project.projectUrl && (
+                      <a href={project.projectUrl} target="_blank" rel="noopener noreferrer" className="text-black hover:underline">
+                        Project
+                      </a>
+                    )}
+                    {project.githubUrl && (
+                      <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="text-black hover:underline">
+                        GitHub
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -175,18 +167,18 @@ export default function ModernMinimal({ resume }: ModernMinimalProps) {
       )}
 
       {/* Certifications */}
-      {certifications.isVisible && certifications.items.length > 0 && (
+      {resume.sections.certifications?.isVisible && resume.sections.certifications?.items?.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-sm font-light text-gray-900 uppercase tracking-wide mb-3 border-b border-gray-200 pb-2">
-            {certifications.customTitle}
+          <h2 className="text-base font-bold text-black border-b border-black pb-2 mb-3">
+            {resume.sections.certifications?.customTitle || 'Certifications'}
           </h2>
           <div className="space-y-2">
-            {certifications.items.map((cert) => (
-              <div key={cert.id}>
-                <h3 className="text-xs font-light text-gray-900">{cert.name}</h3>
-                <p className="text-xs text-gray-600">{cert.organization}</p>
-                {cert.credentialUrl && (
-                  <a href={cert.credentialUrl} className="text-xs text-gray-600 hover:text-gray-900 underline">
+            {resume.sections.certifications.items.map((cert, idx) => (
+              <div key={idx} className="text-xs">
+                <p className="font-bold text-black">{cert.name}</p>
+                <p className="font-light text-black">{cert.issuer} • {cert.issueDate}</p>
+                {cert.verificationUrl && (
+                  <a href={cert.verificationUrl} target="_blank" rel="noopener noreferrer" className="text-black hover:underline">
                     Verify
                   </a>
                 )}
@@ -197,21 +189,47 @@ export default function ModernMinimal({ resume }: ModernMinimalProps) {
       )}
 
       {/* Awards */}
-      {awards.isVisible && awards.items.length > 0 && (
+      {resume.sections.awards?.isVisible && resume.sections.awards?.items?.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-sm font-light text-gray-900 uppercase tracking-wide mb-3 border-b border-gray-200 pb-2">
-            {awards.customTitle}
+          <h2 className="text-base font-bold text-black border-b border-black pb-2 mb-3">
+            {resume.sections.awards?.customTitle || 'Awards'}
           </h2>
           <div className="space-y-2">
-            {awards.items.map((award) => (
-              <div key={award.id}>
-                <h3 className="text-xs font-light text-gray-900">{award.title}</h3>
-                <p className="text-xs text-gray-600">{award.organization}</p>
+            {resume.sections.awards.items.map((award, idx) => (
+              <div key={idx} className="text-xs">
+                <div className="flex justify-between items-baseline">
+                  <p className="font-bold text-black">{award.title}</p>
+                  <p className="font-light text-black">{award.date}</p>
+                </div>
+                <p className="font-light text-black">{award.organization}</p>
+                {award.description && (
+                  <div className="mt-1 text-black leading-relaxed">
+                    {renderHTML(award.description)}
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
       )}
+
+      {/* Custom Sections */}
+      {resume.customSections?.map((section, sectionIdx) => (
+        section.isVisible && (
+          <div key={sectionIdx} className="mb-6">
+            <h2 className="text-base font-bold text-black border-b border-black pb-2 mb-3">
+              {section.title}
+            </h2>
+            <div className="space-y-2">
+              {section.items?.map((item, itemIdx) => (
+                <div key={itemIdx} className="text-xs text-black leading-relaxed">
+                  {renderHTML(item.content)}
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      ))}
     </div>
   );
 }

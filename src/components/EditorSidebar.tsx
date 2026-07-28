@@ -1,41 +1,34 @@
 import { Plus } from 'lucide-react';
-import Button from './Button';
+import { Button } from './Button';
 
 interface EditorSidebarProps {
-  onAddSection: () => void;
-  isOpen: boolean;
-  children?: React.ReactNode;
+  onAddSection?: () => void;
+  children: React.ReactNode;
 }
 
-export default function EditorSidebar({
-  onAddSection,
-  isOpen,
-  children,
-}: EditorSidebarProps) {
+export function EditorSidebar({ onAddSection, children }: EditorSidebarProps) {
   return (
-    <div className={`
-      fixed lg:static inset-y-0 left-0 w-80 bg-white border-r border-gray-100
-      transform lg:transform-none transition-transform duration-300 z-40
-      ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-      flex flex-col overflow-hidden
-    `}>
-      {/* Top Actions */}
-      <div className="p-4 border-b border-gray-100 flex gap-2">
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={onAddSection}
-          className="gap-2 flex-1 flex items-center justify-center"
-        >
-          <Plus className="w-4 h-4" />
-          Add Section
-        </Button>
+    <aside className="w-full lg:w-2/5 bg-white border-r border-black overflow-y-auto">
+      <div className="p-8">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-black mb-6">Resume Information</h2>
+          {onAddSection && (
+            <Button
+              onClick={onAddSection}
+              variant="primary"
+              size="lg"
+              className="w-full flex items-center justify-center gap-2"
+            >
+              <Plus size={20} />
+              Add Custom Section
+            </Button>
+          )}
+        </div>
+        
+        <div className="space-y-8">
+          {children}
+        </div>
       </div>
-
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto">
-        {children}
-      </div>
-    </div>
+    </aside>
   );
 }
