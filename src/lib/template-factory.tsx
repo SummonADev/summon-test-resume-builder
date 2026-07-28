@@ -1,6 +1,8 @@
 import { Resume, TemplateName } from '@/types/resume';
 import ModernMinimal from '@/templates/ModernMinimal';
 import ProfessionalCorporate from '@/templates/ProfessionalCorporate';
+import ElegantTwoColumn from '@/templates/ElegantTwoColumn';
+import CreativeDesigner from '@/templates/CreativeDesigner';
 import ATSFriendly from '@/templates/ATSFriendly';
 
 export function renderTemplate(resume: Resume) {
@@ -10,11 +12,9 @@ export function renderTemplate(resume: Resume) {
     case 'professional-corporate':
       return <ProfessionalCorporate resume={resume} />;
     case 'elegant-two-column':
-      // TODO: Implement elegant two-column
-      return <ModernMinimal resume={resume} />;
+      return <ElegantTwoColumn resume={resume} />;
     case 'creative-designer':
-      // TODO: Implement creative designer
-      return <ModernMinimal resume={resume} />;
+      return <CreativeDesigner resume={resume} />;
     case 'ats-friendly':
       return <ATSFriendly resume={resume} />;
     default:
