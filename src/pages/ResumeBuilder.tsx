@@ -1,11 +1,13 @@
 import { useState, useRef } from 'react';
 import { useResumeStore } from '@/store/resume-store';
 import { TemplateName } from '@/types/resume';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import Header from '@/components/Header';
 import EditorSidebar from '@/components/EditorSidebar';
 import PreviewPanel from '@/components/PreviewPanel';
 import TemplateSelector from '@/components/TemplateSelector';
 import SettingsModal from '@/components/SettingsModal';
+import CompletenessIndicator from '@/components/CompletenessIndicator';
 import PersonalInfoForm from '@/components/sections/PersonalInfoForm';
 import SummaryForm from '@/components/sections/SummaryForm';
 import SkillsForm from '@/components/sections/SkillsForm';
@@ -27,6 +29,10 @@ export default function ResumeBuilder() {
   const setTemplate = useResumeStore((state) => state.setTemplate);
   const setPreviewMode = useResumeStore((state) => state.setPreviewMode);
   const previewMode = useResumeStore((state) => state.uiState.previewMode);
+  const undo = useResumeStore((state) => state.undo);
+  const redo = useResumeStore((state) => state.redo);
+  const canUndo = useResumeStore((state) => state.canUndo());
+  const canRedo = useResumeStore((state) => state.canRedo());
 
   const handleExport = async () => {
     if (!previewRef.current) {
@@ -44,6 +50,13 @@ export default function ResumeBuilder() {
       setExporting(false);
     }
   };
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    onCtrlZ: () => canUndo && undo(),
+    onCtrlY: () => canRedo && redo(),
+    onCtrlShiftS: handleExport,
+  });
 
   const handleAddSection = () => {
     alert('Custom sections coming in Phase 3');
@@ -88,6 +101,7 @@ export default function ResumeBuilder() {
           onSettings={handleSettings}
         >
           <div className="p-4 space-y-4">
+            <CompletenessIndicator resume={resume} />
             <PersonalInfoForm />
             <SummaryForm />
             <ExperienceForm />
