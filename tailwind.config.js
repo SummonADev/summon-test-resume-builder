@@ -3,6 +3,9 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        lato: ['Lato', 'sans-serif'],
+      },
       colors: {
         slate: {
           50: '#f8fafc',

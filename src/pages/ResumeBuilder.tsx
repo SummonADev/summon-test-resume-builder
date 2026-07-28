@@ -8,7 +8,6 @@ import PreviewPanel from '@/components/PreviewPanel';
 import TemplateSelector from '@/components/TemplateSelector';
 import SettingsModal from '@/components/SettingsModal';
 import CompletenessIndicator from '@/components/CompletenessIndicator';
-import KeyboardShortcutsHint from '@/components/KeyboardShortcutsHint';
 import PersonalInfoForm from '@/components/sections/PersonalInfoForm';
 import SummaryForm from '@/components/sections/SummaryForm';
 import SkillsForm from '@/components/sections/SkillsForm';
@@ -21,7 +20,6 @@ import { renderTemplate } from '@/lib/template-factory';
 import { exportResumeToPDF } from '@/lib/pdf-export';
 
 export default function ResumeBuilder() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -60,7 +58,7 @@ export default function ResumeBuilder() {
   });
 
   const handleAddSection = () => {
-    alert('Custom sections coming in Phase 3');
+    alert('Custom sections coming soon');
   };
 
   const handleSettings = () => {
@@ -72,7 +70,7 @@ export default function ResumeBuilder() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-slate-50">
+    <div className="flex flex-col h-screen bg-white">
       {/* Template Selector Modal */}
       {showTemplateSelector && (
         <TemplateSelector
@@ -87,9 +85,8 @@ export default function ResumeBuilder() {
 
       {/* Header */}
       <Header
-        onSidebarToggle={() => setSidebarOpen(!sidebarOpen)}
         onExport={handleExport}
-        onTemplateClick={() => setShowTemplateSelector(true)}
+        onSettingsClick={handleSettings}
         exporting={exporting}
       />
 
@@ -97,11 +94,10 @@ export default function ResumeBuilder() {
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar Editor */}
         <EditorSidebar
-          isOpen={sidebarOpen}
+          isOpen={true}
           onAddSection={handleAddSection}
-          onSettings={handleSettings}
         >
-          <div className="p-4 space-y-4">
+          <div className="p-4 space-y-3">
             <CompletenessIndicator resume={resume} />
             <PersonalInfoForm />
             <SummaryForm />
@@ -116,14 +112,11 @@ export default function ResumeBuilder() {
 
         {/* Preview Panel */}
         <PreviewPanel previewMode={previewMode} onModeChange={setPreviewMode}>
-          <div ref={previewRef} className="p-8">
+          <div ref={previewRef} className="bg-white">
             {renderTemplate(resume)}
           </div>
         </PreviewPanel>
       </div>
-
-      {/* Keyboard Shortcuts Help */}
-      <KeyboardShortcutsHint />
     </div>
   );
 }
