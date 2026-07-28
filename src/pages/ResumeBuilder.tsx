@@ -6,6 +6,11 @@ import PreviewPanel from '@/components/PreviewPanel';
 import PersonalInfoForm from '@/components/sections/PersonalInfoForm';
 import SummaryForm from '@/components/sections/SummaryForm';
 import SkillsForm from '@/components/sections/SkillsForm';
+import ExperienceForm from '@/components/sections/ExperienceForm';
+import EducationForm from '@/components/sections/EducationForm';
+import ProjectsForm from '@/components/sections/ProjectsForm';
+import CertificationsForm from '@/components/sections/CertificationsForm';
+import AwardsForm from '@/components/sections/AwardsForm';
 
 export default function ResumeBuilder() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -40,7 +45,12 @@ export default function ResumeBuilder() {
           <div className="p-4 space-y-4">
             <PersonalInfoForm />
             <SummaryForm />
+            <ExperienceForm />
+            <EducationForm />
             <SkillsForm />
+            <ProjectsForm />
+            <CertificationsForm />
+            <AwardsForm />
           </div>
         </EditorSidebar>
 
