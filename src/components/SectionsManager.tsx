@@ -25,18 +25,18 @@ function DraggableSection({ id, label, isVisible }: DraggableSectionProps) {
       ref={setNodeRef}
       style={style}
       className={clsx(
-        'flex items-center gap-2 p-3 bg-slate-50 rounded border border-slate-200 cursor-move',
-        isDragging && 'opacity-50 bg-blue-50',
+        'flex items-center gap-2 p-3 bg-gray-50 rounded border border-gray-200 cursor-move',
+        isDragging && 'opacity-50 bg-gray-100',
         !isVisible && 'opacity-60'
       )}
       {...attributes}
       {...listeners}
     >
-      <GripVertical className="w-4 h-4 text-slate-400" />
-      <span className={clsx('flex-1 text-sm font-medium', !isVisible && 'line-through text-slate-400')}>
+      <GripVertical className="w-4 h-4 text-gray-400" />
+      <span className={clsx('flex-1 text-sm font-light', !isVisible && 'line-through text-gray-400')}>
         {label}
       </span>
-      {!isVisible && <span className="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded">Hidden</span>}
+      {!isVisible && <span className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">Hidden</span>}
     </div>
   );
 }

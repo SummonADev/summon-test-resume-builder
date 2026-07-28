@@ -51,27 +51,27 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-slate-200 sticky top-0 bg-white flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-slate-900">Section Order</h2>
+      <div className="bg-white rounded max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b border-gray-100 sticky top-0 bg-white flex justify-between items-center">
+          <h2 className="text-lg font-light text-gray-900">Section Order</h2>
           <button
             onClick={onClose}
-            className="text-slate-500 hover:text-slate-700 text-2xl leading-none"
+            className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
           >
             ✕
           </button>
         </div>
 
         <div className="p-6">
-          <p className="text-sm text-slate-600 mb-4">
-            Drag sections to reorder them on your resume. Hidden sections are shown with a label.
+          <p className="text-xs text-gray-600 mb-4">
+            Drag sections to reorder them. Hidden sections won't appear on your resume.
           </p>
 
           <SectionsManager sections={sections} onReorder={(newOrder) => reorderSections(newOrder as any)} />
 
-          <div className="mt-6 p-4 bg-blue-50 rounded border border-blue-200">
-            <p className="text-sm text-blue-900">
-              💡 Use the eye icon on each section card to hide/show sections from your resume.
+          <div className="mt-6 p-3 bg-gray-50 rounded border border-gray-200">
+            <p className="text-xs text-gray-700">
+              Use the eye icon to hide or show sections on your resume.
             </p>
           </div>
         </div>
